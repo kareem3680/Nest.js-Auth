@@ -1,0 +1,365 @@
+# 1.
+Write-Host "`n[2/7] Creating all folders..." -ForegroundColor Yellow
+
+$folders = @(
+    # Common folders
+    "src/common/constants",
+    "src/common/decorators",
+    "src/common/dto",
+    "src/common/exceptions",
+    "src/common/filters",
+    "src/common/guards",
+    "src/common/interceptors",
+    "src/common/interfaces",
+    "src/common/middleware",
+    "src/common/pipes",
+    "src/common/utils",
+    
+    # Config folder
+    "src/config",
+    
+    # Identity structure
+    "src/modules/identity/entities",
+    "src/modules/identity/auth/guards",
+    "src/modules/identity/auth/strategies",
+    "src/modules/identity/auth/dto",
+    "src/modules/identity/users/repository",
+    "src/modules/identity/users/dto",
+    "src/modules/identity/companies/repository",
+    "src/modules/identity/companies/dto",
+    "src/modules/identity/password/dto",
+    
+    # Shared folders
+    "src/shared/database",
+    "src/shared/cache",
+    "src/shared/email",
+    "src/shared/tenant",
+    
+    # Scripts & logs
+    "src/scripts",
+    "logs",
+    "postman"
+)
+
+foreach ($folder in $folders) {
+    New-Item -ItemType Directory -Force -Path $folder | Out-Null
+    Write-Host "   Created: $folder" -ForegroundColor Gray
+}
+
+# 2.
+Write-Host "`n[3/7] Generating modules..." -ForegroundColor Yellow
+
+# Common module
+nest generate module common --no-spec
+
+# Shared modules
+nest generate module shared/database --no-spec
+nest generate module shared/cache --no-spec
+nest generate module shared/email --no-spec
+nest generate module shared/tenant --no-spec
+
+# Identity main module
+nest generate module modules/identity --no-spec
+
+# Identity sub-modules
+nest generate module modules/identity/auth --no-spec
+nest generate module modules/identity/users --no-spec
+nest generate module modules/identity/companies --no-spec
+nest generate module modules/identity/password --no-spec
+
+# 3.
+Write-Host "`n[4/7] Generating controllers..." -ForegroundColor Yellow
+
+# 
+nest generate controller modules/identity/auth/auth --no-spec --flat
+nest generate controller modules/identity/users/users --no-spec --flat
+nest generate controller modules/identity/companies/companies --no-spec --flat
+nest generate controller modules/identity/password/password --no-spec --flat
+
+# 4.
+Write-Host "`n[5/7] Generating services..." -ForegroundColor Yellow
+
+nest generate service modules/identity/auth/auth --no-spec --flat
+nest generate service modules/identity/users/users --no-spec --flat
+nest generate service modules/identity/companies/companies --no-spec --flat
+nest generate service modules/identity/password/password --no-spec --flat
+
+# Shared services
+nest generate service shared/database/database --no-spec --flat
+nest generate service shared/cache/cache --no-spec --flat
+nest generate service shared/email/email --no-spec --flat
+nest generate service shared/tenant/tenant --no-spec --flat
+
+# 5.
+Write-Host "`n[6/7] Generating common components..." -ForegroundColor Yellow
+
+# Decorators
+nest generate decorator common/decorators/roles --no-spec --flat
+nest generate decorator common/decorators/current-user --no-spec --flat
+nest generate decorator common/decorators/public --no-spec --flat
+
+# Guards
+nest generate guard common/guards/jwt-auth --no-spec --flat
+nest generate guard common/guards/roles --no-spec --flat
+
+# Interceptors
+nest generate interceptor common/interceptors/transform --no-spec --flat
+nest generate interceptor common/interceptors/logging --no-spec --flat
+
+# Filters
+nest generate filter common/filters/http-exception --no-spec --flat
+
+# Pipes
+nest generate pipe common/pipes/validation --no-spec --flat
+nest generate pipe common/pipes/sanitize --no-spec --flat
+
+# Middleware
+nest generate middleware common/middleware/logger --no-spec --flat
+nest generate middleware common/middleware/sanitize --no-spec --flat
+
+# 6.
+Write-Host "`n[7/7] Creating additional files..." -ForegroundColor Yellow
+
+# Config files
+New-Item -ItemType File -Force -Path "src/config/database.config.ts" | Out-Null
+New-Item -ItemType File -Force -Path "src/config/redis.config.ts" | Out-Null
+New-Item -ItemType File -Force -Path "src/config/jwt.config.ts" | Out-Null
+New-Item -ItemType File -Force -Path "src/config/email.config.ts" | Out-Null
+New-Item -ItemType File -Force -Path "src/config/configuration.ts" | Out-Null
+
+# Common constants
+New-Item -ItemType File -Force -Path "src/common/constants/index.ts" | Out-Null
+
+# Common DTOs
+New-Item -ItemType File -Force -Path "src/common/dto/pagination.dto.ts" | Out-Null
+New-Item -ItemType File -Force -Path "src/common/dto/response.dto.ts" | Out-Null
+
+# Common exceptions
+New-Item -ItemType File -Force -Path "src/common/exceptions/api-error.exception.ts" | Out-Null
+
+# Common interfaces
+New-Item -ItemType File -Force -Path "src/common/interfaces/user.interface.ts" | Out-Null
+New-Item -ItemType File -Force -Path "src/common/interfaces/request.interface.ts" | Out-Null
+
+# Common utils
+New-Item -ItemType File -Force -Path "src/common/utils/api-features.util.ts" | Out-Null
+New-Item -ItemType File -Force -Path "src/common/utils/token.util.ts" | Out-Null
+New-Item -ItemType File -Force -Path "src/common/utils/cron-job.util.ts" | Out-Null
+New-Item -ItemType File -Force -Path "src/common/utils/logger.util.ts" | Out-Null
+New-Item -ItemType File -Force -Path "src/common/utils/sanitize.util.ts" | Out-Null
+
+# Identity entities
+New-Item -ItemType File -Force -Path "src/modules/identity/entities/user.entity.ts" | Out-Null
+New-Item -ItemType File -Force -Path "src/modules/identity/entities/company.entity.ts" | Out-Null
+
+# Auth feature extra files
+New-Item -ItemType File -Force -Path "src/modules/identity/auth/guards/company-context.guard.ts" | Out-Null
+New-Item -ItemType File -Force -Path "src/modules/identity/auth/strategies/jwt.strategy.ts" | Out-Null
+New-Item -ItemType File -Force -Path "src/modules/identity/auth/strategies/local.strategy.ts" | Out-Null
+New-Item -ItemType File -Force -Path "src/modules/identity/auth/dto/signup.dto.ts" | Out-Null
+New-Item -ItemType File -Force -Path "src/modules/identity/auth/dto/login.dto.ts" | Out-Null
+New-Item -ItemType File -Force -Path "src/modules/identity/auth/dto/refresh-token.dto.ts" | Out-Null
+New-Item -ItemType File -Force -Path "src/modules/identity/auth/dto/logout.dto.ts" | Out-Null
+
+# Users feature extra files
+New-Item -ItemType File -Force -Path "src/modules/identity/users/repository/users.repository.ts" | Out-Null
+New-Item -ItemType File -Force -Path "src/modules/identity/users/dto/create-user.dto.ts" | Out-Null
+New-Item -ItemType File -Force -Path "src/modules/identity/users/dto/update-user.dto.ts" | Out-Null
+New-Item -ItemType File -Force -Path "src/modules/identity/users/dto/get-user.dto.ts" | Out-Null
+New-Item -ItemType File -Force -Path "src/modules/identity/users/dto/user-response.dto.ts" | Out-Null
+
+# Companies feature extra files
+New-Item -ItemType File -Force -Path "src/modules/identity/companies/repository/companies.repository.ts" | Out-Null
+New-Item -ItemType File -Force -Path "src/modules/identity/companies/dto/create-company.dto.ts" | Out-Null
+New-Item -ItemType File -Force -Path "src/modules/identity/companies/dto/update-company.dto.ts" | Out-Null
+New-Item -ItemType File -Force -Path "src/modules/identity/companies/dto/company-response.dto.ts" | Out-Null
+
+# Password feature extra files
+New-Item -ItemType File -Force -Path "src/modules/identity/password/dto/send-reset-code.dto.ts" | Out-Null
+New-Item -ItemType File -Force -Path "src/modules/identity/password/dto/verify-reset-code.dto.ts" | Out-Null
+New-Item -ItemType File -Force -Path "src/modules/identity/password/dto/reset-password.dto.ts" | Out-Null
+New-Item -ItemType File -Force -Path "src/modules/identity/password/dto/update-password.dto.ts" | Out-Null
+
+# Shared extra files
+New-Item -ItemType File -Force -Path "src/shared/database/base.repository.ts" | Out-Null
+
+# Scripts
+New-Item -ItemType File -Force -Path "src/scripts/add-company-id.script.ts" | Out-Null
+
+# Main files
+New-Item -ItemType File -Force -Path "src/main.ts" | Out-Null
+New-Item -ItemType File -Force -Path "src/app.module.ts" | Out-Null
+New-Item -ItemType File -Force -Path "src/seed.ts" | Out-Null
+
+# Postman
+New-Item -ItemType File -Force -Path "postman/auth-nest.postman_collection.json" | Out-Null
+
+# Env files
+New-Item -ItemType File -Force -Path ".env" | Out-Null
+New-Item -ItemType File -Force -Path ".env.example" | Out-Null
+
+# 7.
+Write-Host "`n[8/7] Installing packages..." -ForegroundColor Yellow
+
+npm install @nestjs/config @nestjs/jwt @nestjs/passport @nestjs/schedule @nestjs/cache-manager @nestjs/mongoose mongoose passport passport-jwt passport-local bcryptjs @types/passport-jwt @types/passport-local @types/bcryptjs class-validator class-transformer nodemailer @types/nodemailer axios @types/axios winston nest-winston cache-manager @types/cache-manager redis @types/redis uuid @types/uuid lodash @types/lodash moment joi sanitize-html dompurify @types/dompurify @nestjs/throttler @nestjs/schedule
+
+npm install -D @types/node @types/express
+
+# 8.
+Write-Host "`n[9/7] Cleaning up..." -ForegroundColor Yellow
+
+# 
+Get-ChildItem -Path src -Recurse -Filter "*.spec.ts" | Remove-Item -Force -ErrorAction SilentlyContinue
+Remove-Item -Path test -Recurse -Force -ErrorAction SilentlyContinue
+
+Write-Host "`n========================================" -ForegroundColor Green
+Write-Host "    Auth-Nest Project Created!       " -ForegroundColor Green
+Write-Host "========================================" -ForegroundColor Green
+Write-Host "`n Location: $(Get-Location)" -ForegroundColor Cyan
+Write-Host " Run: cd auth-nest" -ForegroundColor Cyan
+Write-Host " Start coding!" -ForegroundColor Cyan
+
+
+
+
+auth-nest/
+├── 📁 src/
+│   ├── 📁 common/
+│   │   ├── 📁 constants/
+│   │   │   └── index.ts
+│   │   ├── 📁 decorators/
+│   │   │   ├── roles.decorator.ts
+│   │   │   ├── current-user.decorator.ts
+│   │   │   └── public.decorator.ts
+│   │   ├── 📁 dto/
+│   │   │   ├── pagination.dto.ts
+│   │   │   └── response.dto.ts
+│   │   ├── 📁 exceptions/
+│   │   │   └── api-error.exception.ts
+│   │   ├── 📁 filters/
+│   │   │   └── http-exception.filter.ts
+│   │   ├── 📁 guards/
+│   │   │   ├── jwt-auth.guard.ts
+│   │   │   └── roles.guard.ts
+│   │   ├── 📁 interceptors/
+│   │   │   ├── transform.interceptor.ts
+│   │   │   └── logging.interceptor.ts
+│   │   ├── 📁 interfaces/
+│   │   │   ├── user.interface.ts
+│   │   │   └── request.interface.ts
+│   │   ├── 📁 middleware/
+│   │   │   ├── logger.middleware.ts
+│   │   │   └── sanitize.middleware.ts
+│   │   ├── 📁 pipes/
+│   │   │   ├── validation.pipe.ts
+│   │   │   └── sanitize.pipe.ts
+│   │   ├── 📁 utils/
+│   │   │   ├── api-features.util.ts
+│   │   │   ├── token.util.ts
+│   │   │   ├── cron-job.util.ts
+│   │   │   ├── logger.util.ts
+│   │   │   └── sanitize.util.ts
+│   │   └── common.module.ts
+│   │
+│   ├── 📁 config/
+│   │   ├── database.config.ts
+│   │   ├── redis.config.ts
+│   │   ├── jwt.config.ts
+│   │   ├── email.config.ts
+│   │   └── configuration.ts
+│   │
+│   ├── 📁 modules/
+│   │   └── 📁 identity/
+│   │       ├── 📁 entities/
+│   │       │   ├── user.entity.ts
+│   │       │   └── company.entity.ts
+│   │       │
+│   │       ├── 📁 auth/
+│   │       │   ├── 📁 guards/
+│   │       │   │   └── company-context.guard.ts
+│   │       │   ├── 📁 strategies/
+│   │       │   │   ├── jwt.strategy.ts
+│   │       │   │   └── local.strategy.ts
+│   │       │   ├── 📁 dto/
+│   │       │   │   ├── signup.dto.ts
+│   │       │   │   ├── login.dto.ts
+│   │       │   │   ├── refresh-token.dto.ts
+│   │       │   │   └── logout.dto.ts
+│   │       │   ├── auth.controller.ts
+│   │       │   ├── auth.service.ts
+│   │       │   └── auth.module.ts
+│   │       │
+│   │       ├── 📁 users/
+│   │       │   ├── 📁 repository/
+│   │       │   │   └── users.repository.ts
+│   │       │   ├── 📁 dto/
+│   │       │   │   ├── create-user.dto.ts
+│   │       │   │   ├── update-user.dto.ts
+│   │       │   │   ├── get-user.dto.ts
+│   │       │   │   └── user-response.dto.ts
+│   │       │   ├── users.controller.ts
+│   │       │   ├── users.service.ts
+│   │       │   └── users.module.ts
+│   │       │
+│   │       ├── 📁 companies/
+│   │       │   ├── 📁 repository/
+│   │       │   │   └── companies.repository.ts
+│   │       │   ├── 📁 dto/
+│   │       │   │   ├── create-company.dto.ts
+│   │       │   │   ├── update-company.dto.ts
+│   │       │   │   └── company-response.dto.ts
+│   │       │   ├── companies.controller.ts
+│   │       │   ├── companies.service.ts
+│   │       │   └── companies.module.ts
+│   │       │
+│   │       ├── 📁 password/
+│   │       │   ├── 📁 dto/
+│   │       │   │   ├── send-reset-code.dto.ts
+│   │       │   │   ├── verify-reset-code.dto.ts
+│   │       │   │   ├── reset-password.dto.ts
+│   │       │   │   └── update-password.dto.ts
+│   │       │   ├── password.controller.ts
+│   │       │   ├── password.service.ts
+│   │       │   └── password.module.ts
+│   │       │
+│   │       └── identity.module.ts
+│   │
+│   ├── 📁 shared/
+│   │   ├── 📁 database/
+│   │   │   ├── base.repository.ts
+│   │   │   ├── database.service.ts
+│   │   │   └── database.module.ts
+│   │   ├── 📁 cache/
+│   │   │   ├── cache.service.ts
+│   │   │   └── cache.module.ts
+│   │   ├── 📁 email/
+│   │   │   ├── email.service.ts
+│   │   │   └── email.module.ts
+│   │   └── 📁 tenant/
+│   │       ├── tenant.service.ts
+│   │       └── tenant.module.ts
+│   │
+│   ├── 📁 scripts/
+│   │   └── add-company-id.script.ts
+│   │
+│   ├── 📁 logs/
+│   │   └── .gitkeep
+│   │
+│   ├── app.module.ts
+│   ├── main.ts
+│   └── seed.ts
+│
+├── 📁 postman/
+│   └── auth-nest.postman_collection.json
+│
+├── .env
+├── .env.example
+├── .gitignore
+├── .eslintrc.js
+├── .prettierrc
+├── nest-cli.json
+├── package.json
+├── package-lock.json
+├── README.md
+├── tsconfig.json
+└── tsconfig.build.json

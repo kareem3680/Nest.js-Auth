@@ -1,0 +1,906 @@
+{
+  "info": {
+    "_postman_id": "055dad22-6b3e-4174-91fb-2a6bcd998537",
+    "name": "Nest.js Auth",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "38670371"
+  },
+  "item": [
+    {
+      "name": "Identity",
+      "item": [
+        {
+          "name": "Refresh Access Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let response = pm.response.json();\r",
+                  "let accessToken = response.data?.accessToken;\r",
+                  "pm.environment.set(\"JWT\", accessToken);\r",
+                  "\r",
+                  "let refreshToken = response.data?.refreshToken;\r",
+                  "if (refreshToken) pm.environment.set(\"REFRESH_TOKEN\", refreshToken);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{REFRESH_TOKEN}}\"\n}"
+            },
+            "url": {
+              "raw": "{{MainHost}}/api/v1/auth/refresh",
+              "host": ["{{MainHost}}"],
+              "path": ["api", "v1", "auth", "refresh"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Sign-Up",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let response = pm.response.json();\r",
+                  "let accessToken = response.accessToken;\r",
+                  "pm.environment.set(\"JWT\", accessToken);\r",
+                  "\r",
+                  "let refreshToken = response.refreshToken;\r",
+                  "pm.environment.set(\"REFRESH_TOKEN\", refreshToken);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"\",\r\n    \"email\": \"\",\r\n    \"phone\": \"\",\r\n    \"password\": \"\",\r\n    \"passwordConfirmation\": \"\",\r\n    \"position\": \"\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{MainHost}}/api/v1/auth/signUp",
+              "host": ["{{MainHost}}"],
+              "path": ["api", "v1", "auth", "signUp"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Log-In",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let response = pm.response.json();\r",
+                  "let accessToken = response.accessToken;\r",
+                  "pm.environment.set(\"JWT\", accessToken);\r",
+                  "\r",
+                  "let refreshToken = response.refreshToken;\r",
+                  "pm.environment.set(\"REFRESH_TOKEN\", refreshToken);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"Example_Admin@test.com\",\r\n    \"password\": \"Example000\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{MainHost}}/api/v1/auth/logIn",
+              "host": ["{{MainHost}}"],
+              "path": ["api", "v1", "auth", "logIn"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Log-Out",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{JWT}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{MainHost}}/api/v1/auth/logout",
+              "host": ["{{MainHost}}"],
+              "path": ["api", "v1", "auth", "logout"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Data",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{JWT}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{MainHost}}/api/v1/userDashboard/getMyData",
+              "host": ["{{MainHost}}"],
+              "path": ["api", "v1", "userDashboard", "getMyData"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update My Data",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{JWT}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"\",\r\n    \"email\": \"\",\r\n    \"phone\": \"+\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{MainHost}}/api/v1/userDashboard/updateMyData",
+              "host": ["{{MainHost}}"],
+              "path": ["api", "v1", "userDashboard", "updateMyData"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Change My Password",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let response = pm.response.json();\r",
+                  "let accessToken = response.accessToken;\r",
+                  "pm.environment.set(\"JWT\", accessToken);\r",
+                  "\r",
+                  "let refreshToken = response.refreshToken;\r",
+                  "pm.environment.set(\"REFRESH_TOKEN\", refreshToken);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{JWT}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"currentPassword\":\"\",\r\n    \"newPassword\":\"\",\r\n    \"newPasswordConfirm\":\"\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{MainHost}}/api/v1/updatePassword/",
+              "host": ["{{MainHost}}"],
+              "path": ["api", "v1", "updatePassword", ""]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Forget Password",
+      "item": [
+        {
+          "name": "Send Reset Code",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [""],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{MainHost}}/api/v1/forgetPassword/sendResetCode",
+              "host": ["{{MainHost}}"],
+              "path": ["api", "v1", "forgetPassword", "sendResetCode"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Resend Reset Code",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [""],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{MainHost}}/api/v1/forgetPassword/resendResetCode",
+              "host": ["{{MainHost}}"],
+              "path": ["api", "v1", "forgetPassword", "resendResetCode"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Verify Reset Code",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [""],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"resetCode\": \"\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{MainHost}}/api/v1/forgetPassword/verifyResetCode",
+              "host": ["{{MainHost}}"],
+              "path": ["api", "v1", "forgetPassword", "verifyResetCode"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Reset Password",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let response = pm.response.json();\r",
+                  "let accessToken = response.accessToken;\r",
+                  "pm.environment.set(\"JWT\", accessToken);\r",
+                  "\r",
+                  "let refreshToken = response.refreshToken;\r",
+                  "pm.environment.set(\"REFRESH_TOKEN\", refreshToken);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\" : \"\",\r\n    \"newPassword\": \"\",\r\n    \"confirmNewPassword\": \"\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{MainHost}}/api/v1/forgetPassword/resetPassword",
+              "host": ["{{MainHost}}"],
+              "path": ["api", "v1", "forgetPassword", "resetPassword"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Super-Admin Dashboard",
+      "item": [
+        {
+          "name": "Create Company",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{JWT}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"\",\n    \"email\": \"\"\n}"
+            },
+            "url": {
+              "raw": "{{MainHost}}/api/v1/companies",
+              "host": ["{{MainHost}}"],
+              "path": ["api", "v1", "companies"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Admin In Company",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{JWT}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Example Admin\",\r\n    \"email\": \"Example_Admin@test.com\",\r\n    \"phone\": \"+201545800540\",\r\n    \"password\": \"Example000\",\r\n    \"passwordConfirmation\": \"Example000\",\r\n    \"position\": \"test\",\r\n    \"role\": \"admin\",\r\n    \"companyId\": \"69ac999762e457e8d06cc371\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{MainHost}}/api/v1/adminDashboard",
+              "host": ["{{MainHost}}"],
+              "path": ["api", "v1", "adminDashboard"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Companies",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{JWT}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{MainHost}}/api/v1/companies",
+              "host": ["{{MainHost}}"],
+              "path": ["api", "v1", "companies"],
+              "query": [
+                {
+                  "key": "sort",
+                  "value": "-completedAt",
+                  "disabled": true
+                },
+                {
+                  "key": "sort",
+                  "value": "completedAt",
+                  "disabled": true
+                },
+                {
+                  "key": "fields",
+                  "value": "location",
+                  "disabled": true
+                },
+                {
+                  "key": "from",
+                  "value": "2025-11-01",
+                  "disabled": true
+                },
+                {
+                  "key": "pricePerMile[gte]",
+                  "value": "0.1",
+                  "disabled": true
+                },
+                {
+                  "key": "active",
+                  "value": "true",
+                  "disabled": true
+                },
+                {
+                  "key": "keyword",
+                  "value": "Boulevard",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "disabled": true
+                },
+                {
+                  "key": "page",
+                  "value": "1",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Company",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{JWT}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"\",\n    \"email\": \"\"\n}"
+            },
+            "url": {
+              "raw": "{{MainHost}}/api/v1/companies/69834c49d18ed3611172159a",
+              "host": ["{{MainHost}}"],
+              "path": ["api", "v1", "companies", "69834c49d18ed3611172159a"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Single Company",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{JWT}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{MainHost}}/api/v1/companies/69834c49d18ed3611172159a",
+              "host": ["{{MainHost}}"],
+              "path": ["api", "v1", "companies", "69834c49d18ed3611172159a"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Deactivate Company",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{JWT}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{MainHost}}/api/v1/companies/deactivate/69983fbcce5567c3a67a0890",
+              "host": ["{{MainHost}}"],
+              "path": [
+                "api",
+                "v1",
+                "companies",
+                "deactivate",
+                "69983fbcce5567c3a67a0890"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Activate Company",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{JWT}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{MainHost}}/api/v1/companies/activate/69983fbcce5567c3a67a0890",
+              "host": ["{{MainHost}}"],
+              "path": [
+                "api",
+                "v1",
+                "companies",
+                "activate",
+                "69983fbcce5567c3a67a0890"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Admin Dashboard",
+      "item": [
+        {
+          "name": "Create User",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{JWT}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"\",\r\n    \"email\": \"\",\r\n    \"phone\": \"\",\r\n    \"password\": \"\",\r\n    \"passwordConfirmation\": \"\",\r\n    \"position\": \"\",\r\n    \"role\": \"\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{MainHost}}/api/v1/adminDashboard",
+              "host": ["{{MainHost}}"],
+              "path": ["api", "v1", "adminDashboard"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Users",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{JWT}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{MainHost}}/api/v1/adminDashboard",
+              "host": ["{{MainHost}}"],
+              "path": ["api", "v1", "adminDashboard"],
+              "query": [
+                {
+                  "key": "sort",
+                  "value": "-jobId",
+                  "disabled": true
+                },
+                {
+                  "key": "sort",
+                  "value": "jobId",
+                  "disabled": true
+                },
+                {
+                  "key": "fields",
+                  "value": "name phone",
+                  "disabled": true
+                },
+                {
+                  "key": "from",
+                  "value": "2025-11-01",
+                  "disabled": true
+                },
+                {
+                  "key": "to",
+                  "value": "2025-12-01",
+                  "disabled": true
+                },
+                {
+                  "key": "jobId[lte]",
+                  "value": "200",
+                  "disabled": true
+                },
+                {
+                  "key": "jobId[gte]",
+                  "value": "120",
+                  "disabled": true
+                },
+                {
+                  "key": "active",
+                  "value": "true",
+                  "disabled": true
+                },
+                {
+                  "key": "keyword",
+                  "value": "Flutter",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "disabled": true
+                },
+                {
+                  "key": "page",
+                  "value": "1",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Specific User",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{JWT}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{MainHost}}/api/v1/adminDashboard/69ac9b4762e457e8d06cc398",
+              "host": ["{{MainHost}}"],
+              "path": [
+                "api",
+                "v1",
+                "adminDashboard",
+                "69ac9b4762e457e8d06cc398"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update User Role",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{JWT}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"role\": \"\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{MainHost}}/api/v1/adminDashboard/6787816668730d28fe99332f",
+              "host": ["{{MainHost}}"],
+              "path": [
+                "api",
+                "v1",
+                "adminDashboard",
+                "6787816668730d28fe99332f"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Deactivate User",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{JWT}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{MainHost}}/api/v1/adminDashboard/deactivate/69ac9b4762e457e8d06cc398",
+              "host": ["{{MainHost}}"],
+              "path": [
+                "api",
+                "v1",
+                "adminDashboard",
+                "deactivate",
+                "69ac9b4762e457e8d06cc398"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Activate User",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{JWT}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{MainHost}}/api/v1/adminDashboard/activate/69ac9b4762e457e8d06cc398",
+              "host": ["{{MainHost}}"],
+              "path": [
+                "api",
+                "v1",
+                "adminDashboard",
+                "activate",
+                "69ac9b4762e457e8d06cc398"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
