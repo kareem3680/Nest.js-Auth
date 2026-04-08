@@ -1,9 +1,9 @@
 export class CompanyResponseDto {
-  id: string;
-  name: string;
-  email: string;
+  id!: string;
+  name!: string;
+  email!: string;
   phone?: string;
-  active: boolean;
+  active!: boolean;
   createdBy?: string;
   updatedBy?: string;
   createdAt?: Date;

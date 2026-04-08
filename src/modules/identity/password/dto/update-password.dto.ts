@@ -3,7 +3,7 @@ import { IsString, MinLength, Matches, IsNotEmpty } from 'class-validator';
 export class UpdatePasswordDto {
   @IsString()
   @IsNotEmpty()
-  currentPassword: string;
+  currentPassword!: string;
 
   @IsString()
   @MinLength(5)
@@ -11,9 +11,9 @@ export class UpdatePasswordDto {
     message: 'Password must contain at least one letter and one number',
   })
   @IsNotEmpty()
-  newPassword: string;
+  newPassword!: string;
 
   @IsString()
   @IsNotEmpty()
-  newPasswordConfirm: string;
+  newPasswordConfirm!: string;
 }

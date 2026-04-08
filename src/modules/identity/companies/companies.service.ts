@@ -2,8 +2,9 @@ import {
   Injectable,
   BadRequestException,
   NotFoundException,
+  ConflictException,
 } from '@nestjs/common';
-import { Model, Types } from 'mongoose';
+import { Types } from 'mongoose';
 import { CompaniesRepository } from './repository/companies.repository';
 import { UsersRepository } from '../users/repository/users.repository';
 import { CacheService } from '../../../shared/cache/cache.service';
@@ -13,16 +14,6 @@ import { UpdateCompanyDto } from './dto/update-company.dto';
 import { PaginationDto } from '../../../common/dto/pagination.dto';
 import type { RequestWithUser } from '../../../common/interfaces/request.interface';
 import { CompanyMapper } from './mappers/company.mapper';
-import { CompanyDocument } from '../entities/company.entity';
-
-interface UserAggregationItem {
-  _id:
-    | {
-        toString(): string;
-      }
-    | string;
-  usersCount: number;
-}
 
 @Injectable()
 export class CompaniesService {
@@ -35,6 +26,24 @@ export class CompaniesService {
   ) {}
 
   async createCompany(dto: CreateCompanyDto, userId: string) {
+    const existingName = await this.companiesRepository.findByName(dto.name);
+    if (existingName) {
+      throw new ConflictException(
+        `Company with name "${dto.name}" already exists`,
+      );
+    }
+
+    if (dto.email) {
+      const existingEmail = await this.companiesRepository.findByEmail(
+        dto.email,
+      );
+      if (existingEmail) {
+        throw new ConflictException(
+          `Company with email "${dto.email}" already exists`,
+        );
+      }
+    }
+
     const company = await this.companiesRepository.create({
       ...dto,
       createdBy: new Types.ObjectId(userId),
@@ -63,25 +72,25 @@ export class CompaniesService {
 
         const companyIds = result.data.map((c) => c._id);
 
-        const usersAggregation: UserAggregationItem[] =
-          await Model.aggregate<UserAggregationItem>([
-            { $match: { companyId: { $in: companyIds } } },
-            { $group: { _id: '$companyId', usersCount: { $sum: 1 } } },
-          ]);
+        const usersAggregation = await this.usersRepository.aggregate<{
+          _id: Types.ObjectId;
+          usersCount: number;
+        }>([
+          { $match: { companyId: { $in: companyIds } } },
+          { $group: { _id: '$companyId', usersCount: { $sum: 1 } } },
+        ]);
 
-        const usersMap: Record<string, number> = {};
-        usersAggregation.forEach((item) => {
-          usersMap[item._id.toString()] = item.usersCount;
-        });
+        const usersMap = new Map(
+          usersAggregation.map((item) => [
+            item._id.toString(),
+            item.usersCount,
+          ]),
+        );
 
-        const data = result.data.map((company: CompanyDocument) => {
-          const usersCount = usersMap[company._id.toString()] || 0;
-
-          return CompanyMapper.toDto({
-            ...company,
-            usersCount,
-          } as CompanyDocument & { usersCount: number });
-        });
+        const data = result.data.map((company) => ({
+          ...CompanyMapper.toDto(company),
+          usersCount: usersMap.get(company._id.toString()) || 0,
+        }));
 
         return {
           data,
@@ -109,10 +118,12 @@ export class CompaniesService {
           companyId: company._id,
         });
 
-        return CompanyMapper.toDto({
-          ...company,
+        const companyDto = CompanyMapper.toDto(company);
+
+        return {
+          ...companyDto,
           usersCount,
-        } as unknown as CompanyDocument & { usersCount: number });
+        };
       },
       3600,
       'companies',
@@ -131,7 +142,11 @@ export class CompaniesService {
         dto.name,
         id,
       );
-      if (exists) throw new BadRequestException('Company name already exists');
+      if (exists) {
+        throw new ConflictException(
+          `Company with name "${dto.name}" already exists`,
+        );
+      }
       company.name = dto.name;
     }
 
@@ -140,7 +155,11 @@ export class CompaniesService {
         dto.email,
         id,
       );
-      if (exists) throw new BadRequestException('Company email already exists');
+      if (exists) {
+        throw new ConflictException(
+          `Company with email "${dto.email}" already exists`,
+        );
+      }
       company.email = dto.email;
     }
 
@@ -171,8 +190,13 @@ export class CompaniesService {
       throw new BadRequestException('Company already inactive');
 
     company.active = false;
-
     await company.save();
+
+    await this.usersRepository.updateMany(
+      { companyId: company._id },
+      { active: false },
+    );
+
     await this.cacheService.del('companies:*');
 
     return { message: 'Company deactivated successfully' };
@@ -187,8 +211,13 @@ export class CompaniesService {
     if (company.active) throw new BadRequestException('Company already active');
 
     company.active = true;
-
     await company.save();
+
+    await this.usersRepository.updateMany(
+      { companyId: company._id },
+      { active: true },
+    );
+
     await this.cacheService.del('companies:*');
 
     return { message: 'Company activated successfully' };

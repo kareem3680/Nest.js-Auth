@@ -12,11 +12,11 @@ export class CreateCompanyDto {
   @MinLength(2)
   @MaxLength(100)
   @IsNotEmpty()
-  name: string;
+  name!: string;
 
   @IsEmail()
   @IsNotEmpty()
-  email: string;
+  email!: string;
 
   @IsOptional()
   @IsString()

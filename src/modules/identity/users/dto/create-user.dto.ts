@@ -15,16 +15,16 @@ export class CreateUserDto {
   @MinLength(3)
   @MaxLength(30)
   @IsNotEmpty()
-  name: string;
+  name!: string;
 
   @IsEmail()
   @IsNotEmpty()
-  email: string;
+  email!: string;
 
   @IsString()
   @IsIn(['admin', 'employee', 'guest'])
   @IsNotEmpty()
-  role: string;
+  role!: string;
 
   @IsOptional()
   @IsString()
@@ -36,11 +36,11 @@ export class CreateUserDto {
     message: 'Password must contain at least one letter and one number',
   })
   @IsNotEmpty()
-  password: string;
+  password!: string;
 
   @IsString()
   @IsNotEmpty()
-  passwordConfirmation: string;
+  passwordConfirmation!: string;
 
   @IsOptional()
   @IsString()

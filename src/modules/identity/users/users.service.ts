@@ -71,13 +71,10 @@ export class UsersService {
       throw new NotFoundException('Company not found');
     }
 
-    const existingUser = await this.usersRepository.findByEmail(
-      rest.email,
-      companyIdToUse,
-    );
+    const existingUser = await this.usersRepository.findByEmail(rest.email);
 
     if (existingUser) {
-      throw new BadRequestException('Email already exists for this company');
+      throw new BadRequestException('Email already exists');
     }
 
     const jobId = await this.usersRepository.getNextJobId();

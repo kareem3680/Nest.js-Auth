@@ -13,11 +13,11 @@ export class SignUpDto {
   @MinLength(3)
   @MaxLength(30)
   @IsNotEmpty()
-  name: string;
+  name!: string;
 
   @IsEmail()
   @IsNotEmpty()
-  email: string;
+  email!: string;
 
   @IsOptional()
   @IsString()
@@ -29,11 +29,11 @@ export class SignUpDto {
     message: 'Password must contain at least one letter and one number',
   })
   @IsNotEmpty()
-  password: string;
+  password!: string;
 
   @IsString()
   @IsNotEmpty()
-  passwordConfirmation: string;
+  passwordConfirmation!: string;
 
   @IsOptional()
   @IsString()

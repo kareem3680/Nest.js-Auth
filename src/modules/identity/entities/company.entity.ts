@@ -14,7 +14,7 @@ export class Company {
     maxlength: 100,
     unique: true,
   })
-  name: string;
+  name!: string;
 
   @Prop({
     required: true,
@@ -22,19 +22,19 @@ export class Company {
     lowercase: true,
     unique: true,
   })
-  email: string;
+  email!: string;
 
   @Prop()
-  phone: string;
+  phone!: string;
 
   @Prop({ default: true })
-  active: boolean;
+  active!: boolean;
 
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User' })
-  createdBy: Types.ObjectId;
+  createdBy!: Types.ObjectId;
 
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User' })
-  updatedBy: Types.ObjectId;
+  updatedBy!: Types.ObjectId;
 }
 
 export const CompanySchema = SchemaFactory.createForClass(Company);

@@ -1,10 +1,10 @@
 export class UserResponseDto {
-  id: string;
-  name: string;
-  email: string;
+  id!: string;
+  name!: string;
+  email!: string;
   phone?: string;
-  active: boolean;
-  role: string;
+  active!: boolean;
+  role!: string;
   hireDate?: Date;
   position?: string;
   job?: string;

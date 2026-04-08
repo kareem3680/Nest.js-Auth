@@ -169,4 +169,11 @@ export class UsersRepository extends BaseRepository<UserDocument> {
 
     return (lastUser?.jobId || 99) + 1;
   }
+
+  async updateMany(
+    filter: FilterQuery<UserDocument>,
+    update: UpdateQuery<UserDocument>,
+  ) {
+    return this.userModel.updateMany(filter, update).exec();
+  }
 }
